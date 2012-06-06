@@ -9,7 +9,7 @@ import spock.lang.Shared
 @Stepwise
 class VertxPluginSpec extends Specification {
 
-	@Shared Project project = ProjectBuilder.builder().withProjectDir(new File('/Users/rob/Workspace/gr8conf.2012/gradle-vertx/buildSrc/src/test/resources')).build()
+	@Shared Project project = ProjectBuilder.builder().withName('test').withProjectDir(new File('/Users/rob/Workspace/gr8conf.2012/gradle-vertx/buildSrc/src/test/resources')).build()
 
 	void setupSpec() {
 		project.apply plugin: VertxPlugin
@@ -17,6 +17,7 @@ class VertxPluginSpec extends Specification {
 
 	void 'can start a vertx app'() {
 		when:
+		project.tasks.vertxRun.main = 'Server.groovy'
 		project.tasks.vertxRun.execute()
 
 		then:

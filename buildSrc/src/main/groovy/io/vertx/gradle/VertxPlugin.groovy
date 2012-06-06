@@ -1,60 +1,38 @@
 package io.vertx.gradle
 
-import org.vertx.java.core.buffer.Buffer
-import org.vertx.java.core.impl.DefaultVertx
-import org.vertx.java.core.parsetools.RecordParser
-import org.vertx.java.deploy.impl.VerticleManager
-
-import java.util.concurrent.atomic.AtomicReference
-
 import org.gradle.api.*
-import org.vertx.java.core.*
-import org.vertx.java.core.net.*
-import org.vertx.java.deploy.impl.cli.*
-
-import java.util.concurrent.*
+import org.vertx.java.core.Vertx
+import org.vertx.java.core.impl.DefaultVertx
+import org.vertx.java.deploy.impl.VerticleManager
 import org.vertx.java.deploy.impl.Args
+import org.vertx.java.deploy.impl.cli.VertxCommand
+import org.vertx.java.core.net.NetClient
+import org.vertx.java.core.net.NetSocket
+import org.vertx.java.core.Handler
+import org.vertx.java.core.parsetools.RecordParser
+import org.vertx.java.core.buffer.Buffer
+import org.vertx.java.core.SimpleHandler
+import java.util.concurrent.*
+import java.util.concurrent.atomic.*
 
 class VertxPlugin implements Plugin<Project> {
 
-	private Vertx vertx = new DefaultVertx()
-	private VerticleManager mgr
-
 	void apply(Project project) {
-		project.task('vertxRun') << {
-			if (startCluster(new Args([] as String[]))) {
-				def main = 'Server.groovy'
-				def dc = new DeployCommand(false, null, 'Server.groovy', null, [project.projectDir.toURI().toURL()] as URL[], 1)
-				def jsonConf = null
-
-				def latch = new CountDownLatch(1)
-				mgr.deploy(dc.worker, dc.name, dc.main, jsonConf, dc.urls, dc.instances, null, new Handler() {
-					@Override
-					void handle(e) {
-						latch.countDown()
-					}
-				})
-				latch.await()
-			}
-		}
+		def vertxRun = project.tasks.add('vertxRun', VertxRun)
+		vertxRun.plugin = this
+		def vertxStop = project.tasks.add('vertxStop', VertxStop)
+		vertxStop.plugin = this
 
 		project.task('vertxStart') << {}
 		project.task('vertxDeploy') << {}
 		project.task('vertxUndeploy') << {}
 
-		project.task('vertxStop') << {
-			def latch = new CountDownLatch(1)
-			mgr.undeployAll(new Handler() {
-				@Override
-				void handle(e) {
-					latch.countDown()
-				}
-			})
-			latch.await()
-		}
 	}
 
-	private boolean startCluster(Args args) {
+	private Vertx vertx = new DefaultVertx()
+	protected VerticleManager mgr
+
+	boolean startCluster(Args args) {
 		boolean clustered = args.map.get("-cluster") != null;
 		if (clustered) {
 			System.out.print("Starting clustering...");
@@ -133,7 +111,7 @@ class VertxPlugin implements Plugin<Project> {
 
 		while (true) {
 			try {
-				if (!latch.await(10, TimeUnit.SECONDS)) {
+				if (!latch.await(10, java.util.concurrent.TimeUnit.SECONDS)) {
 					throw new IllegalStateException("Timed out while sending command");
 				}
 				break;
@@ -144,5 +122,4 @@ class VertxPlugin implements Plugin<Project> {
 
 		return result.get();
 	}
-
 }
