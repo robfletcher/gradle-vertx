@@ -37,6 +37,21 @@ class VertxPlugin implements Plugin<Project> {
 				latch.await()
 			}
 		}
+
+		project.task('vertxStart') << {}
+		project.task('vertxDeploy') << {}
+		project.task('vertxUndeploy') << {}
+
+		project.task('vertxStop') << {
+			def latch = new CountDownLatch(1)
+			mgr.undeployAll(new Handler() {
+				@Override
+				void handle(e) {
+					latch.countDown()
+				}
+			})
+			latch.await()
+		}
 	}
 
 	private boolean startCluster(Args args) {
@@ -64,6 +79,30 @@ class VertxPlugin implements Plugin<Project> {
 			System.out.println("Started");
 		}
 		return true;
+	}
+
+	private String getDefaultAddress() {
+		Enumeration<NetworkInterface> nets;
+		try {
+			nets = NetworkInterface.getNetworkInterfaces();
+		} catch (SocketException e) {
+			return null;
+		}
+		NetworkInterface netinf;
+		while (nets.hasMoreElements()) {
+			netinf = nets.nextElement();
+
+			Enumeration<InetAddress> addresses = netinf.getInetAddresses();
+
+			while (addresses.hasMoreElements()) {
+				InetAddress address = addresses.nextElement();
+				if (!address.isAnyLocalAddress() && !address.isMulticastAddress()
+						&& !(address instanceof Inet6Address)) {
+					return address.getHostAddress();
+				}
+			}
+		}
+		return null;
 	}
 
 	private String sendCommand(final int port, final VertxCommand command) {

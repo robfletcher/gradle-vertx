@@ -26,12 +26,17 @@ class VertxPluginSpec extends Specification {
 	}
 
 	void 'can stop a vertx app'() {
+		expect:
+		new URL('http://localhost:8080/').openConnection().getResponseCode() == HttpURLConnection.HTTP_OK
+
 		when:
 		project.tasks.vertxStop.execute()
 
+		and:
+		new URL('http://localhost:8080/').openConnection().getResponseCode()
+
 		then:
-		HttpURLConnection connection = new URL('http://localhost:8080/').openConnection()
-		connection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND
+		thrown ConnectException
 	}
 
 }
