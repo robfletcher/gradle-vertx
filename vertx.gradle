@@ -1,5 +1,5 @@
 apply plugin: 'idea'
-apply plugin: io.vertx.gradle.VertxPlugin
+apply plugin: 'VertxPlugin'
 
 repositories {
 	mavenCentral()
