@@ -1,0 +1,19 @@
+apply plugin: 'groovy'
+
+repositories {
+	mavenCentral()
+	flatDir { dirs "${vertxHome}/lib/jars" }
+}
+
+dependencies {
+	compile gradleApi()
+	groovy localGroovy()
+	compile ':vert.x-core'
+	compile ':vert.x-platform'
+	compile ':netty'
+	compile ':jackson-core'
+	compile ':jackson-mapper'
+	compile ':groovy'
+	compile ':hazelcast'
+	compile ':js'
+}

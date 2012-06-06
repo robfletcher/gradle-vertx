@@ -1,3 +1,5 @@
+apply plugin: io.vertx.gradle.VertxPlugin
+
 repositories {
 	mavenCentral()
 	flatDir { dirs "${vertxHome}/lib/jars" }
@@ -18,8 +20,8 @@ dependencies {
 	vertx ':js'
 }
 
-task vertxRun(type: JavaExec) {
-	classpath = configurations.vertx
-	main = 'org.vertx.java.deploy.impl.cli.VertxMgr'
-	args = ['run', 'Server.groovy']
-}
+//task vertxRun(type: JavaExec) {
+//	classpath = configurations.vertx
+//	main = 'org.vertx.java.deploy.impl.cli.VertxMgr'
+//	args = ['run', 'Server.groovy']
+//}
