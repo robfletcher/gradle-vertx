@@ -2,6 +2,9 @@ build
 .gradle
 gradle.properties
 
-/*.ipr
-/*.iml
-/*.iws
+*.ipr
+*.iml
+*.iws
+out
+
+.DS_Store

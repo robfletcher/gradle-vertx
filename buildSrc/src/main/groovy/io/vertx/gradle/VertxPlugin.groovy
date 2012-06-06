@@ -17,7 +17,6 @@ import org.vertx.java.deploy.impl.Args
 
 class VertxPlugin implements Plugin<Project> {
 
-
 	private Vertx vertx = new DefaultVertx()
 	private VerticleManager mgr
 
@@ -27,8 +26,15 @@ class VertxPlugin implements Plugin<Project> {
 				def main = 'Server.groovy'
 				def dc = new DeployCommand(false, null, 'Server.groovy', null, [project.projectDir.toURI().toURL()] as URL[], 1)
 				def jsonConf = null
-				mgr.deploy(dc.worker, dc.name, dc.main, jsonConf, dc.urls, dc.instances, null, null)
-				mgr.block()
+
+				def latch = new CountDownLatch(1)
+				mgr.deploy(dc.worker, dc.name, dc.main, jsonConf, dc.urls, dc.instances, null, new Handler() {
+					@Override
+					void handle(e) {
+						latch.countDown()
+					}
+				})
+				latch.await()
 			}
 		}
 	}
