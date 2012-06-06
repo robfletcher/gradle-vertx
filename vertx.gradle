@@ -3,13 +3,23 @@ repositories {
 	flatDir { dirs "${vertxHome}/lib/jars" }
 }
 
+configurations {
+	vertx
+}
+
 dependencies {
-	runtime ':vert.x-core'
-	runtime ':vert.x-platform'
-	runtime ':netty'
-	runtime ':jackson-core'
-	runtime ':jackson-mapper'
-	runtime ':groovy'
-	runtime ':hazelcast'
-	runtime ':js'
+	vertx ':vert.x-core'
+	vertx ':vert.x-platform'
+	vertx ':netty'
+	vertx ':jackson-core'
+	vertx ':jackson-mapper'
+	vertx ':groovy'
+	vertx ':hazelcast'
+	vertx ':js'
+}
+
+task vertxRun(type: JavaExec) {
+	classpath = configurations.vertx
+	main = 'org.vertx.java.deploy.impl.cli.VertxMgr'
+	args = ['run', 'Server.groovy']
 }
