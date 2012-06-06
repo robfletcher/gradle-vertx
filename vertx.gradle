@@ -1,0 +1,15 @@
+repositories {
+	mavenCentral()
+	flatDir { dirs "${vertxHome}/lib/jars" }
+}
+
+dependencies {
+	runtime ':vert.x-core'
+	runtime ':vert.x-platform'
+	runtime ':netty'
+	runtime ':jackson-core'
+	runtime ':jackson-mapper'
+	runtime ':groovy'
+	runtime ':hazelcast'
+	runtime ':js'
+}
