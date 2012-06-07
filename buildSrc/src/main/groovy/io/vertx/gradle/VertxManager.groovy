@@ -17,6 +17,10 @@ class VertxManager {
 			print 'Starting vertx...'
 			mgr = new VerticleManager(vertx)
 			println 'OK'
+
+			addShutdownHook {
+				stopVertx()
+			}
 		}
 	}
 
