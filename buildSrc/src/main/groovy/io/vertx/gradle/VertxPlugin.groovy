@@ -1,32 +1,23 @@
 package io.vertx.gradle
 
-import org.vertx.java.deploy.impl.VerticleManager
 import org.gradle.api.*
-import org.vertx.java.core.impl.*
 
 class VertxPlugin implements Plugin<Project> {
 
 	void apply(Project project) {
-		def vertxRun = project.tasks.add('vertxRun', VertxRun)
-		vertxRun.plugin = this
+		project.task('vertxStop') << {
+			vertxManager.stopVertx()
+		}
 
-		def vertxStop = project.tasks.add('vertxStop', VertxStop)
-		vertxStop.plugin = this
+		project.task('vertxStart') << {
+			vertxManager.startVertx()
+		}
 
-		def vertxStart = project.tasks.add('vertxStart', VertxStart)
-		vertxStart.plugin = this
-
-		def vertxDeploy = project.tasks.add('vertxDeploy', VertxDeploy)
-		vertxDeploy.plugin = this
-
-		def vertxUndeploy = project.tasks.add('vertxUndeploy', VertxUndeploy)
-		vertxUndeploy.plugin = this
+		project.tasks.add('vertxDeploy', VertxDeploy)
+		project.tasks.add('vertxUndeploy', VertxUndeploy)
+		project.tasks.add('vertxRun', VertxRun)
 	}
 
-	private VertxInternal vertx = new DefaultVertx()
-	protected VerticleManager mgr
+	private final VertxManager vertxManager = VertxManager.instance
 
-	void startVertx() {
-		if (!mgr) mgr = new VerticleManager(vertx)
-	}
 }

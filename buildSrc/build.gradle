@@ -7,15 +7,18 @@ repositories {
 }
 
 dependencies {
-	compile gradleApi()
 	groovy localGroovy()
+
+	compile gradleApi()
 	compile ':vert.x-core'
 	compile ':vert.x-platform'
-	compile ':netty'
-	compile ':jackson-core'
-	compile ':jackson-mapper'
-	compile ':groovy'
-	compile ':hazelcast'
-	compile ':js'
+
+	runtime ':netty'
+	runtime ':jackson-core'
+	runtime ':jackson-mapper'
+	runtime ':hazelcast'
+	runtime ':js'
+	runtime files("${vertxHome}/conf")
+
 	testCompile 'org.spockframework:spock-core:0.6-groovy-1.8'
 }

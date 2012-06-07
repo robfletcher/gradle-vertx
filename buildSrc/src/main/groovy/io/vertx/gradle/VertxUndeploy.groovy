@@ -2,18 +2,17 @@ package io.vertx.gradle
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
+import org.vertx.java.deploy.impl.cli.UndeployCommand
 
 class VertxUndeploy extends DefaultTask {
 
 	String verticleName
 
-	VertxPlugin plugin
+	private final VertxManager vertxManager = VertxManager.instance
 
 	@TaskAction
 	def vertxUndeploy() {
-		def doneHandler = new BlockingHandler()
-		plugin.mgr.undeploy(verticleName, doneHandler)
-		assert doneHandler.block(), "Timed out undeploying $verticleName"
+		vertxManager.execute(new UndeployCommand(verticleName))
 	}
 
 }

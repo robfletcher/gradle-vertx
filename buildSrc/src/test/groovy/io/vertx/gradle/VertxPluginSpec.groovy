@@ -1,6 +1,9 @@
 package io.vertx.gradle
 
+import static java.util.concurrent.TimeUnit.SECONDS
+
 import org.gradle.api.Project
+import org.gradle.api.internal.AbstractTask
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.*
 
@@ -8,19 +11,17 @@ class VertxPluginSpec extends Specification {
 
 	static final URL VERTICLE_URL = 'http://localhost:8080/'.toURL()
 
-	@Shared Project project = ProjectBuilder.builder().withName('test').withProjectDir(new File('/Users/rob/Workspace/gr8conf.2012/gradle-vertx/buildSrc/src/test/resources')).build()
+	Project project = ProjectBuilder.builder().withProjectDir(new File('/Users/rob/Workspace/gr8conf.2012/gradle-vertx/buildSrc/src/test/resources')).build()
 
-	VertxStart vertxStart
-	VertxStop vertxStop
+	AbstractTask vertxStart
+	AbstractTask vertxStop
 	VertxDeploy vertxDeploy
 	VertxUndeploy vertxUndeploy
 	VertxRun vertxRun
 
-	void setupSpec() {
-		project.apply plugin: VertxPlugin
-	}
-
 	void setup() {
+		project.apply plugin: VertxPlugin
+
 		vertxStart = project.tasks.vertxStart
 		vertxStop = project.tasks.vertxStop
 		vertxDeploy = project.tasks.vertxDeploy
@@ -29,9 +30,8 @@ class VertxPluginSpec extends Specification {
 	}
 
 	void cleanup() {
-		vertxStop.execute()
+		VertxManager.instance.stopVertx()
 	}
-
 
 	void 'can run a vertx app'() {
 		when:
@@ -69,13 +69,11 @@ class VertxPluginSpec extends Specification {
 		VERTICLE_URL.text == 'O HAI!'
 	}
 
-	@Ignore
 	void 'can undeploy a verticle'() {
 		given:
-		vertxStart.execute()
-		vertxDeploy.main = 'Server.groovy'
-		vertxDeploy.verticleName = 'foo'
-		vertxDeploy.execute()
+		vertxRun.main = 'Server.groovy'
+		vertxRun.verticleName = 'foo'
+		vertxRun.execute()
 
 		when:
 		vertxUndeploy.verticleName = 'foo'
