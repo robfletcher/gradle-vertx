@@ -1,34 +1,52 @@
-import io.vertx.gradle.VertxRun
-
+apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: 'vertx'
 
 repositories {
 	mavenCentral()
-	flatDir { dirs "${vertxHome}/lib/jars" }
 }
 
-configurations {
-	vertx
+sourceSets {
+    integrationTest {
+        java.srcDir file('src/integration-test/java')
+        groovy.srcDir file('src/integration-test/groovy')
+        resources.srcDir file('src/integration-test/resources')
+    }
 }
 
 dependencies {
-	vertx ':vert.x-core'
-	vertx ':vert.x-platform'
-	vertx ':netty'
-	vertx ':jackson-core'
-	vertx ':jackson-mapper'
-	vertx ':groovy'
-	vertx ':hazelcast'
-	vertx ':js'
+	groovy 'org.codehaus.groovy:groovy:1.8.6'
+
+	testCompile 'org.spockframework:spock-core:0.6-groovy-1.8'
+
+    integrationTestCompile sourceSets.main.output
+    integrationTestCompile configurations.testCompile
+    integrationTestCompile sourceSets.test.output
+
+    integrationTestRuntime configurations.testRuntime
 }
 
-task run(type: VertxRun) {
+task integrationTest(type: Test) {
+	description = 'Runs the integration tests.'
+    testClassesDir = sourceSets.integrationTest.output.classesDir
+    classpath = sourceSets.integrationTest.runtimeClasspath
+}
+
+integrationTest.doFirst {
+	println 'doFirst...'
+	tasks.vertxStart.execute()
+	tasks.vertxDeploy.execute()
+}
+
+integrationTest.doLast {
+	println 'doLast...'
+	tasks.vertxStop.execute()
+}
+
+check.dependsOn integrationTest
+
+vertxDeploy {
+	dependsOn processIntegrationTestResources
+	classpath(new File('build/resources/integrationTest'))
 	main = 'Server.groovy'
 }
-
-//task vertxRun(type: JavaExec) {
-//	classpath = configurations.vertx
-//	main = 'org.vertx.java.deploy.impl.cli.VertxMgr'
-//	args = ['run', 'Server.groovy']
-//}
