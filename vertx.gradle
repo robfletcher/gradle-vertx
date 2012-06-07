@@ -32,21 +32,29 @@ task integrationTest(type: Test) {
     classpath = sourceSets.integrationTest.runtimeClasspath
 }
 
-integrationTest.doFirst {
-	println 'doFirst...'
-	tasks.vertxStart.execute()
-	tasks.vertxDeploy.execute()
-}
-
-integrationTest.doLast {
-	println 'doLast...'
-	tasks.vertxStop.execute()
-}
-
 check.dependsOn integrationTest
 
 vertxDeploy {
 	dependsOn processIntegrationTestResources
 	classpath(new File('build/resources/integrationTest'))
 	main = 'Server.groovy'
+}
+
+gradle.addListener new VertxLifecycleListener()
+
+class VertxLifecycleListener implements TaskExecutionListener {
+	@Override
+	void beforeExecute(Task task) {
+		if (task.name == 'integrationTest') {
+			task.project.tasks.vertxStart.execute()
+			task.project.tasks.vertxDeploy.execute()
+		}
+	}
+
+	@Override
+	void afterExecute(Task task, TaskState taskState) {
+		if (task.name == 'integrationTest') {
+			task.project.tasks.vertxStop.execute()
+		}
+	}
 }
