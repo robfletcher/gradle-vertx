@@ -1,7 +1,7 @@
 import io.vertx.gradle.VertxRun
 
 apply plugin: 'idea'
-apply plugin: 'VertxPlugin'
+apply plugin: 'vertx'
 
 repositories {
 	mavenCentral()
