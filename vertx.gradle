@@ -1,3 +1,5 @@
+import io.vertx.gradle.VertxRun
+
 apply plugin: 'idea'
 apply plugin: 'VertxPlugin'
 
@@ -19,6 +21,10 @@ dependencies {
 	vertx ':groovy'
 	vertx ':hazelcast'
 	vertx ':js'
+}
+
+task run(type: VertxRun) {
+	main = 'Server.groovy'
 }
 
 //task vertxRun(type: JavaExec) {

@@ -1,21 +1,19 @@
 package io.vertx.gradle
 
-import org.gradle.api.tasks.TaskAction
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
 
-class VertxRun extends DefaultTask {
+class VertxDeploy extends DefaultTask {
 
 	String main
 	String verticleName
-	int instances = 1
 	boolean worker = false
+	int instances = 1
 
 	VertxPlugin plugin
 
 	@TaskAction
-	def vertxRun() {
-		plugin.startVertx()
-
+	def vertxDeploy() {
 		def jsonConf
 		def urls = [project.projectDir.toURI().toURL()] as URL[]
 
