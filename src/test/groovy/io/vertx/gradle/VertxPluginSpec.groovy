@@ -9,7 +9,7 @@ class VertxPluginSpec extends Specification {
 
 	static final URL VERTICLE_URL = 'http://localhost:8080/'.toURL()
 
-	Project project = ProjectBuilder.builder().withProjectDir(new File('/Users/rob/Workspace/gr8conf.2012/gradle-vertx/buildSrc/src/test/resources')).build()
+	Project project = ProjectBuilder.builder().withProjectDir(new File('.')).build()
 
 	AbstractTask vertxStart
 	AbstractTask vertxStop
@@ -33,7 +33,7 @@ class VertxPluginSpec extends Specification {
 
 	@Ignore void 'can run a vertx app'() {
 		when:
-		vertxRun.main = 'Server.groovy'
+		vertxRun.main = 'src/test/resources/Server.groovy'
 		vertxRun.execute()
 
 		then:
@@ -43,7 +43,7 @@ class VertxPluginSpec extends Specification {
 	void 'can stop a vertx app'() {
 		given:
 		vertxStart.execute()
-		vertxDeploy.main = 'Server.groovy'
+		vertxDeploy.main = 'src/test/resources/Server.groovy'
 		vertxDeploy.execute()
 
 		when:
@@ -58,7 +58,7 @@ class VertxPluginSpec extends Specification {
 
 	void 'can start a vertx container then deploy to it'() {
 		given:
-		vertxDeploy.main = 'Server.groovy'
+		vertxDeploy.main = 'src/test/resources/Server.groovy'
 
 		when:
 		vertxStart.execute()
@@ -71,7 +71,7 @@ class VertxPluginSpec extends Specification {
 	void 'can undeploy a verticle'() {
 		given:
 		vertxStart.execute()
-		vertxDeploy.main = 'Server.groovy'
+		vertxDeploy.main = 'src/test/resources/Server.groovy'
 		vertxDeploy.verticleName = 'foo'
 		vertxDeploy.execute()
 
