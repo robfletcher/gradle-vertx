@@ -16,10 +16,10 @@ class VertxPluginSpec extends Specification {
 	AbstractTask vertxStop
 	VertxDeploy vertxDeploy
 	VertxUndeploy vertxUndeploy
-	VertxRun vertxRun
+	AbstractTask vertxRun
 
 	void setup() {
-		project.apply plugin: VertxPlugin
+		project.apply plugin: 'vertx'
 
 		vertxStart = project.tasks.vertxStart
 		vertxStop = project.tasks.vertxStop
