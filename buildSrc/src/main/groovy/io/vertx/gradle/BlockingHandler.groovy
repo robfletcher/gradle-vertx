@@ -1,8 +1,8 @@
 package io.vertx.gradle
 
 import org.vertx.java.core.Handler
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
+
+import java.util.concurrent.*
 
 import static java.util.concurrent.TimeUnit.SECONDS
 

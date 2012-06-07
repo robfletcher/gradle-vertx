@@ -2,10 +2,9 @@ package io.vertx.gradle
 
 import org.vertx.java.deploy.impl.VerticleManager
 import org.vertx.java.core.impl.*
+import org.vertx.java.deploy.impl.cli.*
 
 import static java.util.concurrent.TimeUnit.SECONDS
-import org.vertx.java.deploy.impl.cli.DeployCommand
-import org.vertx.java.deploy.impl.cli.UndeployCommand
 
 @Singleton
 class VertxManager {
