@@ -8,6 +8,7 @@ class VertxRun extends AbstractVertxDeployTask {
 	def vertxRun() {
 		vertxManager.startVertx()
 		println vertxManager.execute(createDeployCommand())
+		vertxManager.block()
 	}
 
 }

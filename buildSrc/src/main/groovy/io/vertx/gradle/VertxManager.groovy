@@ -27,6 +27,8 @@ class VertxManager {
 			mgr.undeployAll(doneHandler)
 			assert doneHandler.block(10, SECONDS), 'Timed out undeploying verticles'
 			println 'OK'
+
+			mgr.unblock()
 		}
 	}
 
@@ -48,4 +50,7 @@ class VertxManager {
 		println 'OK'
 	}
 
+	void block() {
+		mgr.block()
+	}
 }
